@@ -1,0 +1,99 @@
+.page {
+  padding: 2rem;
+  font-family: "Poppins", sans-serif;
+  background: #faf5ff;
+  min-height: 100vh;
+}
+
+.title {
+  text-align: center;
+  font-size: 2rem;
+  color: #7b4bd6;
+  font-weight: 700;
+  margin-bottom: 2rem;
+}
+
+/* Tarjeta principal */
+.card {
+  background: white;
+  max-width: 370px;
+  margin: auto;
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 4px 15px rgba(140, 96, 196, 0.2);
+}
+
+.status {
+  font-size: 1.1rem;
+  text-align: center;
+  margin-bottom: 1.2rem;
+  color: #5a38a1;
+}
+
+.stateTag {
+  font-weight: 700;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.btnIn,
+.btnOut {
+  padding: 12px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s;
+  color: white;
+}
+
+.btnIn {
+  background: #86d47f;
+}
+
+.btnIn:disabled {
+  background: #b3e7ad;
+  cursor: not-allowed;
+}
+
+.btnOut {
+  background: #ff7b7b;
+}
+
+.btnOut:disabled {
+  background: #ffb2b2;
+  cursor: not-allowed;
+}
+
+/* Tabla del historial */
+.table {
+  width: 100%;
+  margin-top: 1rem;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(140, 96, 196, 0.2);
+  border-collapse: collapse;
+}
+
+.table th {
+  background: #e8d5ff;
+  padding: 1rem;
+  text-align: left;
+  color: #5a38a1;
+  font-weight: 600;
+}
+
+.table td {
+  padding: 1rem;
+  border-bottom: 1px solid #f1e7ff;
+}
+
+.table tr:last-child td {
+  border-bottom: none;
+}

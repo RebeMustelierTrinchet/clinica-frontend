@@ -1,0 +1,41 @@
+
+
+.footer {
+  background-color: var(--color-primary);
+  color: var(--color-text);
+  padding: 1.5rem 1rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+  border-top: 1px solid var(--color-gray);
+  font-family: "Poppins", sans-serif;
+}
+
+.decorativeLine {
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+  border-radius: var(--radius);
+  margin-bottom: 0.8rem;
+}
+
+.content h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.content p {
+  font-size: 0.9rem;
+  color: var(--color-text);
+  margin-top: 0.3rem;
+}
+
+.bottom {
+  font-size: 0.8rem;
+  color: var(--color-gray);
+  margin-top: 0.5rem;
+
+}

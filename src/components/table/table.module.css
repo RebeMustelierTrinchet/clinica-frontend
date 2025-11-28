@@ -1,0 +1,20 @@
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.table th,
+.table td {
+  border: 1px solid #ddd;
+  padding: 0.75rem;
+}
+
+.table th {
+  background: #4d79ff;
+  color: white;
+}
+
+.table tr:hover {
+  background: #f2f2f2;
+}

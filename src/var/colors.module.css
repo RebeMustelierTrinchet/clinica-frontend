@@ -1,0 +1,15 @@
+:root {
+  /* 🎨 Colores principales (puedes cambiarlos luego) */
+  --color-bg: #faf8ff;         /* Fondo general suave */
+  --color-primary: #a78bfa;    /* Morado pastel principal */
+  --color-secondary: #c4b5fd;  /* Morado más claro */
+  --color-accent: #f9a8d4;     /* Rosa pastel */
+  --color-text: #2e2e2e;       /* Texto principal */
+  --color-white: #ffffff;
+  --color-gray: #e5e7eb;
+
+  /* 🧁 Sombras y bordes */
+  --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --radius: 12px;
+  --transition: 0.3s ease;
+}

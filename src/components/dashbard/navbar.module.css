@@ -1,0 +1,126 @@
+/* ---- NAVBAR ---- */
+.navbar {
+  width: 100 !important;
+  height: 65px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffeefe; /* pastel rosita */
+  border-bottom: 2px solid #ffd6f7;
+  position: relative;
+  z-index: 10;
+}
+
+/* ---- LOGO ---- */
+.logo a {
+  font-size: 1.4rem;
+  font-weight: bold;
+  text-decoration: none;
+  color: #ff5fa2; 
+  font-family: "Poppins", sans-serif;
+}
+
+/* ---- HAMBURGER ---- */
+.hamburger {
+  width: 30px;
+  height: 22px;
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.hamburger span {
+  height: 3px;
+  background: #ff5fa2;
+  border-radius: 10px;
+  transition: 0.3s;
+}
+
+/* Animation X */
+.active span:nth-child(1) {
+  transform: translateY(9px) rotate(45deg);
+}
+
+.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.active span:nth-child(3) {
+  transform: translateY(-9px) rotate(-45deg);
+}
+
+/* ---- LINKS ---- */
+.navLinks {
+  list-style: none;
+  display: flex;
+  gap: 2rem;
+}
+
+.navLinks li a {
+  text-decoration: none;
+  color: #ff5fa2;
+  font-weight: 600;
+  font-family: "Poppins", sans-serif;
+  transition: 0.2s;
+}
+
+.navLinks li a:hover {
+  color: #ff2d88;
+}
+
+/* ---- MOBILE ---- */
+@media (max-width: 850px) {
+  .hamburger {
+    display: flex;
+  }
+
+  .navLinks {
+    position: absolute;
+    top: 65px;
+    left: 0;
+    width: 100%;
+    background: #ffeefe;
+    border-bottom: 2px solid #ffd6f7;
+    flex-direction: column;
+    padding: 1.2rem 0;
+    gap: 1.2rem;
+    align-items: center;
+    display: none;
+    animation: slideDown 0.25s ease;
+  }
+
+  .open {
+    display: flex;
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+
+.clockOutBtn {
+  background: #ff4d4d;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  width: 100%;
+  margin-top: 10px;
+  transition: 0.2s;
+}
+
+.clockOutBtn:hover {
+  background: #d93636;
+}
