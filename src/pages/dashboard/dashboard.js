@@ -1,12 +1,11 @@
 import React from "react";
 import styles from "./dashboard.module.css";
 import { Link } from "react-router-dom";
-import Navbar from "../../components/dashbard/navbar";
 
 export default function Dashboard() {
   return (
     <div className={styles.dashboard}>
-      <Navbar/>
+      {/* <Navbar/> */}
 
       <h1 className={styles.title}>Panel de Control</h1>
       <p className={styles.subtitle}>Bienvenida, Rebeca ✨</p>
@@ -17,10 +16,10 @@ export default function Dashboard() {
           <p>Administrar empleados y sus datos</p>
         </Link>
 
-        <Link to="/hours/mark" className={styles.card}>
+        {/* <Link to="/hours/mark" className={styles.card}>
           <h2>Marcar Horas</h2>
           <p>Entrada y salida de trabajadores</p>
-        </Link>
+        </Link> */}
 
         <Link to="/hours/history" className={styles.card}>
           <h2>Historial</h2>
@@ -31,6 +30,18 @@ export default function Dashboard() {
           <h2>Reportes</h2>
           <p>Reportes generales y por usuario</p>
         </Link>
+        
+        <Link to="/Inventory" className={styles.card}>
+          <h2>Inventario</h2>
+          <p>Ver el inventario que hay
+          </p>
+        </Link>
+          <Link to="/ClinicalHistory" className={styles.card}>
+          <h2>Historial Clinico</h2>
+          <p>Actualizar el historial clinico
+          </p>
+        </Link>
+       
       </div>
     </div>
   );

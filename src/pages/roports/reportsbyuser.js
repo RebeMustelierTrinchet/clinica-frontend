@@ -5,17 +5,168 @@ import { usersApi } from "../../api/users";
 
 export default function ReportsByUser() {
   const [users, setUsers] = useState([]);
-  const [selected, setSelected] = useState("");
-  const [records, setRecords] = useState([]);
+  const [selectedUserId, setSelectedUserId] = useState("");
+  const [selectedUserName, setSelectedUserName] = useState("");
+  const [weeklyData, setWeeklyData] = useState([]);
+  const [dailyRecords, setDailyRecords] = useState([]);
+  const [totals, setTotals] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [expandedWeeks, setExpandedWeeks] = useState({});
 
   useEffect(() => {
-    usersApi.getAll().then((res) => setUsers(res));
+    usersApi.getUsersRequest()
+      .then((res) => setUsers(res.data))
+      .catch((err) => console.error("Error cargando usuarios:", err));
   }, []);
 
+  // Función auxiliar para agrupar semanas por rango de fechas
+  const groupWeeksByDateRange = (weeks) => {
+    const grouped = {};
+    
+    weeks.forEach(week => {
+      const key = `${week.weekStart}_${week.weekEndDate}`;
+      
+      if (!grouped[key]) {
+        grouped[key] = {
+          ...week,
+          dailyRecords: []
+        };
+      }
+      
+      // Si la semana ya tiene dailyRecords, agregar los nuevos
+      if (week.dailyRecords) {
+        grouped[key].dailyRecords = [...grouped[key].dailyRecords, ...week.dailyRecords];
+      }
+      
+      // Sumar horas y pagos
+      grouped[key].totalHours = (grouped[key].totalHours || 0) + (week.totalHours || 0);
+      grouped[key].totalPay = (grouped[key].totalPay || 0) + (week.totalPay || 0);
+      
+      // Contar días únicos
+      const uniqueDays = new Set([
+        ...(grouped[key].dailyRecords?.map(r => r.date) || []),
+        ...(week.dailyRecords?.map(r => r.date) || [])
+      ]);
+      grouped[key].daysWorked = uniqueDays.size;
+    });
+    
+    return Object.values(grouped).sort((a, b) => 
+      new Date(b.weekStart) - new Date(a.weekStart)
+    );
+  };
+
   const handleSearch = async () => {
-    if (!selected) return;
-    const res = await hoursApi.getReportsByUser(selected);
-    setRecords(res);
+    if (!selectedUserId) {
+      alert("Por favor selecciona un usuario");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      // Encuentra el usuario seleccionado
+      const user = users.find(u => u.id === parseInt(selectedUserId));
+      if (!user) {
+        alert("Usuario no encontrado");
+        return;
+      }
+      
+      setSelectedUserName(user?.name || "");
+      
+      // Obtener TODOS los usuarios con el mismo username
+      const allUserIdsWithSameUsername = users
+        .filter(u => u.username === user.username)
+        .map(u => u.id);
+      
+      // Llama al endpoint para CADA usuario con el mismo username
+      const allPromises = allUserIdsWithSameUsername.map(userId => 
+        hoursApi.getUserWeeklyReport(userId)
+      );
+      
+      const allResults = await Promise.all(allPromises);
+      
+      // Combinar todos los datos
+      const combinedWeeklyData = [];
+      const combinedDailyRecords = [];
+      
+      allResults.forEach((res, index) => {
+        const userId = allUserIdsWithSameUsername[index];
+        
+        if (res.data.weeklySummary) {
+          res.data.weeklySummary.forEach(week => {
+            combinedWeeklyData.push({
+              ...week,
+              sourceUserId: userId
+            });
+          });
+        }
+        
+        if (res.data.dailyRecords) {
+          res.data.dailyRecords.forEach(record => {
+            combinedDailyRecords.push({
+              ...record,
+              sourceUserId: userId
+            });
+          });
+        }
+      });
+      
+      // Ordenar combinados por fecha
+      combinedWeeklyData.sort((a, b) => new Date(b.weekStart) - new Date(a.weekStart));
+      combinedDailyRecords.sort((a, b) => new Date(b.date) - new Date(a.date));
+      
+      // Agrupar semanas por rango de fechas
+      const groupedWeeklyData = groupWeeksByDateRange(combinedWeeklyData);
+      
+      setWeeklyData(groupedWeeklyData);
+      setDailyRecords(combinedDailyRecords);
+      
+      // Calcular nuevos totales combinados
+      const newTotals = {
+        totalHours: combinedDailyRecords.reduce((sum, record) => sum + (record.hours || 0), 0),
+        totalPay: combinedDailyRecords.reduce((sum, record) => sum + (record.dailyPay || 0), 0),
+        totalWeeks: groupedWeeklyData.length,
+        totalUsers: allUserIdsWithSameUsername.length // Para info
+      };
+      
+      setTotals(newTotals);
+      
+      // Inicializar estado de expansión
+      const initialExpanded = {};
+      groupedWeeklyData.forEach(week => {
+        initialExpanded[week.weekStart] = false;
+      });
+      setExpandedWeeks(initialExpanded);
+      
+    } catch (err) {
+      console.error("Error cargando reporte:", err);
+      alert("Error al cargar el reporte");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const toggleWeekDetails = (weekStart) => {
+    setExpandedWeeks(prev => ({
+      ...prev,
+      [weekStart]: !prev[weekStart]
+    }));
+  };
+
+  // Formatear fecha
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('es-ES', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    });
+  };
+
+  // Formatear día de la semana
+  const getDayName = (dateString) => {
+    const days = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+    const date = new Date(dateString);
+    return days[date.getDay()];
   };
 
   return (
@@ -26,40 +177,169 @@ export default function ReportsByUser() {
         <label>Seleccionar usuario:</label>
         <select
           className={styles.select}
-          value={selected}
-          onChange={(e) => setSelected(e.target.value)}
+          value={selectedUserId}
+          onChange={(e) => setSelectedUserId(e.target.value)}
         >
           <option value="">-- Elegir --</option>
           {users.map((u) => (
-            <option key={u._id} value={u._id}>
-              {u.name}
+            <option key={u.id} value={u.id}>
+              {u.name} ({u.username})
             </option>
           ))}
         </select>
 
-        <button className={styles.searchBtn} onClick={handleSearch}>
-          Buscar
+        <button 
+          className={styles.searchBtn} 
+          onClick={handleSearch}
+          disabled={loading || !selectedUserId}
+        >
+          {loading ? "Cargando..." : "Generar Reporte"}
         </button>
       </div>
 
-      {records.length > 0 && (
-        <table className={styles.table}>
-          <thead>
-            <tr>
-              <th>Semana</th>
-              <th>Total Horas</th>
-            </tr>
-          </thead>
+      {selectedUserName && (
+        <div className={styles.userInfo}>
+          <h2>Reporte de: {selectedUserName}</h2>
+          {totals && totals.totalUsers > 1 && (
+            <div className={styles.userNote}>
+              <small>
+                (Combinando datos de {totals.totalUsers} registros con el mismo username)
+              </small>
+            </div>
+          )}
+        </div>
+      )}
 
-          <tbody>
-            {records.map((rec, i) => (
-              <tr key={i}>
-                <td>{rec.week}</td>
-                <td>{rec.totalHours}h</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      {loading ? (
+        <div className={styles.loading}>Cargando reporte...</div>
+      ) : (
+        <>
+          {/* RESUMEN SEMANAL */}
+          {weeklyData.length > 0 && (
+            <div className={styles.section}>
+              <h3>Resumen Semanal (Corte cada Lunes)</h3>
+              <table className={styles.table}>
+                <thead>
+                  <tr>
+                    <th>Semana</th>
+                    <th>Días Trabajados</th>
+                    <th>Total Horas</th>
+                    <th>Pago Total</th>
+                    <th>Detalles</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {weeklyData.map((week, index) => (
+                    <React.Fragment key={week.weekStart}>
+                      <tr>
+                        <td>
+                          <strong>
+                            {formatDate(week.weekStart)} - {formatDate(week.weekEndDate)}
+                          </strong>
+                        </td>
+                        <td>{week.daysWorked} días</td>
+                        <td>{week.totalHours.toFixed(2)}h</td>
+                        <td>${week.totalPay.toFixed(2)}</td>
+                        <td>
+                          <button 
+                            className={styles.detailBtn}
+                            onClick={() => toggleWeekDetails(week.weekStart)}
+                          >
+                            {expandedWeeks[week.weekStart] ? "Ocultar" : "Ver días"}
+                          </button>
+                        </td>
+                      </tr>
+                      
+                      {/* DETALLES DIARIOS EXPANDIDOS */}
+                      {expandedWeeks[week.weekStart] && week.dailyRecords && (
+                        <tr>
+                          <td colSpan="5" className={styles.detailsCell}>
+                            <table className={styles.innerTable}>
+                              <thead>
+                                <tr>
+                                  <th>Día</th>
+                                  <th>Fecha</th>
+                                  <th>Check-In</th>
+                                  <th>Check-Out</th>
+                                  <th>Horas</th>
+                                  <th>Pago del día</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {week.dailyRecords.map((day, idx) => (
+                                  <tr key={idx}>
+                                    <td>{getDayName(day.date)}</td>
+                                    <td>{formatDate(day.date)}</td>
+                                    <td>{new Date(day.checkIn).toLocaleTimeString()}</td>
+                                    <td>{new Date(day.checkOut).toLocaleTimeString()}</td>
+                                    <td>{day.hours.toFixed(2)}h</td>
+                                    <td>${day.dailyPay.toFixed(2)}</td>
+                                  </tr>
+                                ))}
+                                <tr className={styles.dayTotal}>
+                                  <td colSpan="4"><strong>Total de la semana:</strong></td>
+                                  <td><strong>{week.totalHours.toFixed(2)}h</strong></td>
+                                  <td><strong>${week.totalPay.toFixed(2)}</strong></td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </td>
+                        </tr>
+                      )}
+                    </React.Fragment>
+                  ))}
+                  
+                  {/* TOTALES FINALES */}
+                  {totals && (
+                    <tr className={styles.finalTotal}>
+                      <td colSpan="2"><strong>TOTAL GENERAL:</strong></td>
+                      <td><strong>{totals.totalHours.toFixed(2)}h</strong></td>
+                      <td><strong>${totals.totalPay.toFixed(2)}</strong></td>
+                      <td>{totals.totalWeeks} semanas</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {/* VISTA DETALLADA DIARIA (opcional) */}
+          {dailyRecords.length > 0 && (
+            <div className={styles.section}>
+              <h3>Registros Diarios Completos</h3>
+              <table className={styles.table}>
+                <thead>
+                  <tr>
+                    <th>Fecha</th>
+                    <th>Día</th>
+                    <th>Check-In</th>
+                    <th>Check-Out</th>
+                    <th>Horas</th>
+                    <th>Pago</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {dailyRecords.map((record, index) => (
+                    <tr key={index}>
+                      <td>{formatDate(record.date)}</td>
+                      <td>{getDayName(record.date)}</td>
+                      <td>{new Date(record.checkIn).toLocaleTimeString()}</td>
+                      <td>{new Date(record.checkOut).toLocaleTimeString()}</td>
+                      <td>{record.hours.toFixed(2)}h</td>
+                      <td>${record.dailyPay.toFixed(2)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {weeklyData.length === 0 && !loading && selectedUserId && (
+            <div className={styles.noData}>
+              No se encontraron registros para este usuario.
+            </div>
+          )}
+        </>
       )}
     </div>
   );

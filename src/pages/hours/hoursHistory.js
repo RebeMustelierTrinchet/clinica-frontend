@@ -1,35 +1,42 @@
 import React, { useEffect, useState } from "react";
-import styles from "./styles.module.css";
-import { hoursApi } from "../../api/hours";
 
 export default function HoursHistory() {
   const [records, setRecords] = useState([]);
 
   useEffect(() => {
-    hoursApi.getMyHistory().then((res) => setRecords(res));
+    fetch("http://localhost:5000/time/history")
+      .then((res) => res.json())
+      .then((data) => setRecords(data))
+      .catch((err) => console.error("Error:", err));
   }, []);
 
   return (
-    <div className={styles.page}>
-      <h1 className={styles.title}>Historial de Horas</h1>
+    <div style={{ padding: "20px" }}>
+      <h1>Historial de Horas Trabajadas</h1>
 
-      <table className={styles.table}>
+      <table border="1" cellPadding="8" style={{ width: "100%", marginTop: "20px" }}>
         <thead>
           <tr>
-            <th>Fecha</th>
-            <th>Entrada</th>
-            <th>Salida</th>
-            <th>Total</th>
+            <th>Trabajador</th>
+            <th>Email</th>
+            <th>Salario x Hora</th>
+            <th>Check-In</th>
+            <th>Check-Out</th>
+            <th>Horas Trabajadas</th>
+            <th>Pago Total</th>
           </tr>
         </thead>
 
         <tbody>
           {records.map((r) => (
-            <tr key={r._id}>
-              <td>{r.date}</td>
-              <td>{r.checkIn || "-"}</td>
-              <td>{r.checkOut || "-"}</td>
-              <td>{r.totalHours || "0h"}</td>
+            <tr key={r.id}>
+              <td>{r.name}</td>
+              <td>{r.username}</td>
+              <td>${r.salary}</td>
+              <td>{r.checkIn}</td>
+              <td>{r.checkOut || "Aún en turno"}</td>
+              <td>{r.hours || 0}</td>
+              <td>${r.totalPay || 0}</td>
             </tr>
           ))}
         </tbody>
