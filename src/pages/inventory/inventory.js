@@ -20,6 +20,7 @@ export default function InventoryPage() {
     unit: "",
     stock: "",
     costPerUnit: "", 
+    salary: ""
   });
 
   const [editingId, setEditingId] = useState(null);
@@ -45,6 +46,7 @@ export default function InventoryPage() {
           unit: newItem.unit,
           stock: Number(newItem.stock),
           costPerUnit: Number(newItem.costPerUnit), // ← CAMBIADO: costPerUnit en lugar de cost
+          salary: Number(newItem.salary), // ← CONSISTENTE
         
         })
       ).unwrap();
@@ -53,7 +55,8 @@ export default function InventoryPage() {
         type: "",
         unit: "",
         stock: "",
-        costPerUnit: "", // ← CONSISTENTE
+        costPerUnit: "",
+        salary: "", // ← CONSISTENTE
        
       });
     } catch (err) {
@@ -70,6 +73,7 @@ export default function InventoryPage() {
       unit: item.unit,
       stock: item.stock.toString(),
       costPerUnit: item.costPerUnit.toString(), // ← CAMBIADO: item.costPerUnit en lugar de item.cost
+      salary: item.salary.toString(), // ← CONSISTENTE
    
     });
   };
@@ -89,7 +93,7 @@ export default function InventoryPage() {
             unit: editItemData.unit,
             stock: Number(editItemData.stock),
             costPerUnit: Number(editItemData.costPerUnit), // ← CAMBIADO: costPerUnit en lugar de cost
-        
+            salary: Number(editItemData.salary), // ← CONSISTENTE
           },
         })
       ).unwrap();
@@ -178,6 +182,17 @@ export default function InventoryPage() {
                     />
                   </td>
                   <td>
+                 <input
+                    type="number"
+                    step="0.01"
+                    name="salary"
+                    value={newItem.salary}
+                    onChange={handleNewChange}
+                    placeholder="Salario por unidad (USD)"
+                    min="0"
+                  />
+                  </td>
+                  <td>
                     <button 
                       onClick={() => handleEditSubmit(item.id)}
                       className={`${styles.button} ${styles.saveButton}`}
@@ -199,6 +214,7 @@ export default function InventoryPage() {
                   <td>{item.unit || "-"}</td>
                   <td>{item.stock}</td>
                   <td>${parseFloat(item.costPerUnit).toFixed(2)}</td> {/* ← CAMBIADO: item.costPerUnit */}
+                  <td>${parseFloat(item.salary).toFixed(2)}</td>
                   <td>
                     <button 
                       onClick={() => handleEditClick(item)}
@@ -243,6 +259,7 @@ export default function InventoryPage() {
             className={styles.input}
           />
         </div>
+        
         <div className={styles.formGroup}>
           <input
             type="text"
@@ -274,6 +291,18 @@ export default function InventoryPage() {
             onChange={handleNewChange}
             placeholder="Costo por unidad (USD) *"
             required
+            min="0"
+            className={styles.input}
+          />
+        </div>
+        <div className={styles.formGroup}>
+          <input
+            type="number"
+            step="0.01"
+            name="salary"
+            value={newItem.salary}
+            onChange={handleNewChange}
+            placeholder="Salario por unidad (USD)"
             min="0"
             className={styles.input}
           />
