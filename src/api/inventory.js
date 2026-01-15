@@ -1,7 +1,8 @@
 // src/api/inventory.js
 import axios from "axios";
 
-const API_URL = "http://localhost:5000/inventory"; // ruta del backend
+const API_URL = `${process.env.REACT_APP_API_URL}/inventory`;
+// ruta del backend
 
 const inventoryApi = {
   // GET todos los items

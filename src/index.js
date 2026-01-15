@@ -31,6 +31,7 @@ root.render(
         <Layout>
           <Routes>
               <Route path="/" element={<Home />} />
+              <Route path="/users" element={<UsersList/>} />
             {/* ---------- LOGIN ----------- */}
             <Route path="/login" element={<Login />} />
 
@@ -43,14 +44,14 @@ root.render(
                 </PrivateRoute>
               }
             />
-            <Route
+            {/* <Route
               path="/users"
               element={
                 <PrivateRoute roles={["admin"]}>
                   <UsersList/>
                 </PrivateRoute>
               }
-            />
+            /> */}
             <Route
               path="/users/create"
               element={
