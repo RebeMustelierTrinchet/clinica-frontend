@@ -26,7 +26,7 @@ export default function UsersCreate() {
       <h1 className={styles.title}>Crear Usuario</h1>
       <form className={styles.form} onSubmit={handleSubmit}>
         <input type="text" placeholder="Nombre" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
-        <input type="text" placeholder="Email" value={form.username} onChange={(e) => setForm({ ...form, username: e.target.value })} />
+        <input type="text" placeholder="user" value={form.username} onChange={(e) => setForm({ ...form, username: e.target.value })} />
         <input type="text" placeholder="Role" value={form.role} onChange={(e) => setForm({ ...form, role: e.target.value })} />
         <input type="password" placeholder="Contraseña" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} />
         <input type="number" placeholder="Salario" value={form.salary} onChange={(e) => setForm({ ...form, salary: e.target.value })} />

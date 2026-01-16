@@ -31,9 +31,16 @@ root.render(
         <Layout>
           <Routes>
               <Route path="/" element={<Home />} />
-              {/* <Route path="/users/create" element={<UsersCreate />} /> */}
+              <Route path="/users/create" element={<UsersCreate />} />
             {/* ---------- LOGIN ----------- */}
             <Route path="/login" element={<Login />} />
+                {/* <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/users" element={<UsersList />} />
+          <Route path="/users/create" element={<UsersCreate />} />
+          <Route path="/reports" element={<ReportsByUser />} />
+          <Route path="/hours/history" element={<HoursHistory />} />
+          <Route path="/inventory" element={<AdminInventory />} />
+          <Route path="/ClinicalHistory" element={<ClinicalHistory />} /> */}
 
             {/* ---------- RUTAS PROTEGIDAS ----------- */}
           <Route
@@ -69,32 +76,7 @@ root.render(
                 </PrivateRoute>
               }
             />
-            {/* <Route
-              path="/reports/general"
-              element={
-                <PrivateRoute roles={["admin"]}>
-                  <ReportsGeneral />
-                </PrivateRoute>
-              }
-            /> */}
-
-             {/* <Route
-              path="/users/edit/:id"
-              element={
-                <PrivateRoute roles={["admin"]}>
-                  <UsersEdit />
-                </PrivateRoute>
-              }
-            /> */}
-
-            {/* <Route
-              path="/hours/mark"
-              element={
-                <PrivateRoute roles={["admin"]}>
-                  <HoursHistory />
-                </PrivateRoute>
-              } */}
-            {/* /> */}
+       
             <Route
               path="/hours/history"
               element={
@@ -112,7 +94,6 @@ root.render(
                 </PrivateRoute>
               }
             />
-  ClinicalHistory
             <Route
               path="/ClinicalHistory"
               element={

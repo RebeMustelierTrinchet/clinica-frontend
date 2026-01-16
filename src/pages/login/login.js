@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import styles from "./login.module.css";
 import { useNavigate } from "react-router-dom";
+import styles from "./login.module.css";
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -12,23 +12,31 @@ export default function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    const res = await fetch("http://localhost:5000/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password }),
-    });
+    try {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    setMsg(data.msg || data.message);
-    setIsOk(res.ok); // <--- AQUÍ guardamos si fue ok o no
+      setMsg(data.msg || data.message || "Error desconocido");
+      setIsOk(res.ok);
 
-    if (res.ok) {
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("role", data.user.role);
-      localStorage.setItem("userId", data.user.id);
+      if (res.ok) {
+        // Guardamos token y datos del usuario
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("role", data.user.role);
+        localStorage.setItem("userId", data.user.id);
 
-      navigate("/dashboard");
+        // Redirigir al dashboard
+        navigate("/dashboard");
+      }
+    } catch (err) {
+      console.error("Error al conectarse al servidor:", err);
+      setMsg("Error de conexión al servidor");
+      setIsOk(false);
     }
   };
 
@@ -41,6 +49,7 @@ export default function Login() {
           <input
             type="text"
             placeholder="Username"
+            value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
           />
@@ -48,6 +57,7 @@ export default function Login() {
           <input
             type="password"
             placeholder="Password"
+            value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
           />
