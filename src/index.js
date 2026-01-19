@@ -34,16 +34,16 @@ root.render(
               <Route path="/users/create" element={<UsersCreate />} />
             {/* ---------- LOGIN ----------- */}
             <Route path="/login" element={<Login />} />
-                {/* <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/users" element={<UsersList />} />
           <Route path="/users/create" element={<UsersCreate />} />
           <Route path="/reports" element={<ReportsByUser />} />
           <Route path="/hours/history" element={<HoursHistory />} />
           <Route path="/inventory" element={<AdminInventory />} />
-          <Route path="/ClinicalHistory" element={<ClinicalHistory />} /> */}
+          <Route path="/ClinicalHistory" element={<ClinicalHistory />} />
 
             {/* ---------- RUTAS PROTEGIDAS ----------- */}
-          <Route
+          {/* <Route
               path="/dashboard"
               element={
                 <PrivateRoute roles={["admin"]}>
@@ -58,7 +58,7 @@ root.render(
                   <UsersList/>
                 </PrivateRoute>
               }
-            />
+            /> */}
             {/* <Route
               path="/users/create"
               element={
@@ -68,7 +68,7 @@ root.render(
               }
             /> */}
 
-             <Route
+             {/* <Route
               path="/reports"
               element={
                 <PrivateRoute roles={["admin"]}>
@@ -101,7 +101,7 @@ root.render(
                   <ClinicalHistory />
                 </PrivateRoute>
               }
-            />
+            /> */}
 
           </Routes>
         </Layout>
