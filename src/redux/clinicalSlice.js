@@ -47,7 +47,7 @@ const clinicalSlice = createSlice({
 
       state.history.forEach(record => {
         // Suma horas
-        const hours = record.itemsUsed?.reduce((sum, item) => sum + (item.qty || 0), 0) || 0;
+        // const hours = record.itemsUsed?.reduce((sum, item) => sum + (item.qty || 0), 0) || 0;
         totalHours += record.hours || 0; // si el registro tiene horas propias
         totalPayment += record.totalCharged || 0;
 
