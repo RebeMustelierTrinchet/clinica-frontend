@@ -8,7 +8,7 @@ import { usersApi } from "../../api/users";
 export default function ReportsByUser() {
   const dispatch = useDispatch();
 
-  const { weeklyData, dailyRecords, totals, loading } = useSelector(state => state.reports);
+  const { weeklyData, totals, loading } = useSelector(state => state.reports);
   const [users, setUsers] = useState([]);
   const [selectedUserId, setSelectedUserId] = useState("");
   const [selectedUserName, setSelectedUserName] = useState("");
