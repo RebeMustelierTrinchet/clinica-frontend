@@ -59,14 +59,14 @@ root.render(
                 </PrivateRoute>
               }
             />
-            <Route
+            {/* <Route
               path="/users/create"
               element={
                 <PrivateRoute roles={["admin"]}>
                   <UsersCreate />
                 </PrivateRoute>
               }
-            />
+            /> */}
 
              <Route
               path="/reports"
