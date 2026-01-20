@@ -6,7 +6,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import Layout from './components/layout/layout';
 import { AuthProvider } from './context/authContext'; // ⭐ IMPORTANTE
-// import PrivateRoute from './components/privateRoutes/privateRoutes'; // ⭐ IMPORTANTE
+import PrivateRoute from './components/privateRoutes/privateRoutes'; // ⭐ IMPORTANTE
 
 // PAGES
 import Login from "./pages/login/login";
@@ -31,19 +31,19 @@ root.render(
         <Layout>
           <Routes>
               <Route path="/" element={<Home />} />
-              <Route path="/users/create" element={<UsersCreate />} />
+              {/* <Route path="/users/create" element={<UsersCreate />} /> */}
             {/* ---------- LOGIN ----------- */}
             <Route path="/login" element={<Login />} />
-            <Route path="/dashboard" element={<Dashboard />} />
+            {/* <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/users" element={<UsersList />} />
           <Route path="/users/create" element={<UsersCreate />} />
           <Route path="/reports" element={<ReportsByUser />} />
           <Route path="/hours/history" element={<HoursHistory />} />
           <Route path="/inventory" element={<AdminInventory />} />
-          <Route path="/ClinicalHistory" element={<ClinicalHistory />} />
+          <Route path="/ClinicalHistory" element={<ClinicalHistory />} /> */}
 
             {/* ---------- RUTAS PROTEGIDAS ----------- */}
-          {/* <Route
+          <Route
               path="/dashboard"
               element={
                 <PrivateRoute roles={["admin"]}>
@@ -58,17 +58,17 @@ root.render(
                   <UsersList/>
                 </PrivateRoute>
               }
-            /> */}
-            {/* <Route
+            />
+            <Route
               path="/users/create"
               element={
                 <PrivateRoute roles={["admin"]}>
                   <UsersCreate />
                 </PrivateRoute>
               }
-            /> */}
+            />
 
-             {/* <Route
+             <Route
               path="/reports"
               element={
                 <PrivateRoute roles={["admin"]}>
@@ -101,7 +101,7 @@ root.render(
                   <ClinicalHistory />
                 </PrivateRoute>
               }
-            /> */}
+            />
 
           </Routes>
         </Layout>
