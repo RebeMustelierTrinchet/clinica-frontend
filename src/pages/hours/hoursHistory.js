@@ -4,7 +4,7 @@ export default function HoursHistory() {
   const [records, setRecords] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:5000/time/history")
+    fetch("http://localhost:5000/hours/history")
       .then((res) => res.json())
       .then((data) => setRecords(data))
       .catch((err) => console.error("Error:", err));
